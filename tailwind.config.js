@@ -9,8 +9,18 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        black: "#000112",
+        very_dark_grey: "#20212c",
+        dark_grey: "#2b2c37",
+        lines_dark: "#3e3f4e",
+        medium_grey: "#828fa3",
+        lines_light: "#e4ebfa",
+        light_grey: "#f2f4f5",
+        white: "#ffffff",
+        main_red: "#ea5555",
+        red_hover: "ff9898",
+        main_purple: "#635fc7",
+        purple_hover: "#a8a4ff",
       },
     },
   },
