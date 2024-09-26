@@ -1,8 +1,16 @@
 "use client";
 
+// Import Redux-related hooks
+import { Provider } from "react-redux";
+import store from "@/global_states/store";
+
 // Import next.js related hooks
 import { useState } from "react";
 import Image from "next/image";
+
+// Components
+import Sidebar from "../Sidebar/Sidebar";
+import NavDropDown from "../NavDropDown/NavDropDown";
 
 // Font
 import { Plus_Jakarta_Sans } from "next/font/google";
@@ -11,13 +19,9 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import {
   Plus,
   DotsThreeVertical,
-  Sun,
-  MoonStars,
-  ToggleLeft,
-  ToggleRight,
-  EyeSlash,
+  CaretDown,
+  CaretUp,
   Eye,
-  Kanban,
 } from "@phosphor-icons/react/dist/ssr";
 
 // Declare font
@@ -30,15 +34,15 @@ const plus_jakarta_sans = Plus_Jakarta_Sans({
 
 const Navigation = ({ children }) => {
   const [toggleTheme, setToggleTheme] = useState(false);
-  const [activeTab, setActiveTab] = useState(false);
   const [showSidebar, setShowSidebar] = useState(true);
+  const [showDropDown, setShowDropDown] = useState(false);
+
+  const handleShowDropDown = () => {
+    setShowDropDown((prevState) => !prevState);
+  };
 
   const handleShowSidebar = () => {
     setShowSidebar((prevState) => !prevState);
-  };
-
-  const handleActiveTab = () => {
-    setActiveTab((prevState) => !prevState);
   };
 
   const handleToggleTheme = () => {
@@ -46,125 +50,114 @@ const Navigation = ({ children }) => {
   };
 
   return (
-    <body
-      className={`${plus_jakarta_sans.className} ${toggleTheme ? "dark" : ""}`}
-    >
-      <nav className="flex flex-row items-center bg-white dark:bg-dark_grey fixed w-full z-10">
-        {/* logo */}
-        <section
-          className="basis-[15%] flex gap-5 py-[22px] px-5 border-b
-         border-b-lines_light dark:border-b-lines_dark"
+    <Provider store={store}>
+      <body
+        className={`${plus_jakarta_sans.className} ${
+          toggleTheme ? "dark" : ""
+        } 2xl:w-[75%] 2xl:mx-auto 2xl:shadow-2xl transition-all duration-1000`}
+      >
+        <nav
+          className="flex flex-row items-center justify-between bg-white dark:bg-dark_grey 
+          fixed w-full 2xl:w-[75%] z-10 transition-all duration-1000"
         >
-          <Image
-            src={`/Images/logo.webp`}
-            width={36}
-            height={36}
-            alt="Kanban Logo"
-          />
-          <h1 className="text-4xl text-black dark:text-white font-bold">
-            Kanban
-          </h1>
-        </section>
+          {/* logo */}
+          <section className="sm:basis-[30%] xl:basis-1/5 flex justify-center items-center xl:gap-2 gap-2 xl:px-5 px-2 ">
+            <Image
+              src={`/Images/logo.webp`}
+              width={32}
+              height={32}
+              alt="Kanban Logo"
+            />
 
-        {/* navigation */}
-        <sections
-          className="flex flex-row justify-between items-center 
-          border-l border-l-lines_light dark:border-l-lines_dark py-5 border-b
-         border-b-lines_light dark:border-b-lines_dark
-         basis-[85%]
-         "
-        >
-          <h2 className="text-2xl text-black dark:text-white font-bold px-5">
-            Platform Launch
-          </h2>
-
-          <div className="flex gap-5 items-center">
-            <button
-              type="button"
-              className="text-white bg-purple_hover dark:bg-main_purple flex gap-1 text-lg 
-              py-2 px-7 rounded-3xl items-center opacity-50"
+            {/* Display on Mobile */}
+            <div
+              className="flex gap-1 items-center text-lg sm:hidden
+             text-black dark:text-white font-bold"
+              // onClick={handleShowDropDown}
             >
-              <Plus size={20} />
-              <span>Add New Task</span>
-            </button>
+              <h2>Platform Launch</h2>
+              {showDropDown ? (
+                <CaretUp size={20} onClick={handleShowDropDown} />
+              ) : (
+                <CaretDown size={20} onClick={handleShowDropDown} />
+              )}
+              {showDropDown ? (
+                <NavDropDown
+                  toggleTheme={toggleTheme}
+                  handleToggleTheme={handleToggleTheme}
+                  handleShowSidebar={handleShowSidebar}
+                  showSidebar={showSidebar}
+                />
+              ) : null}
+            </div>
 
-            <DotsThreeVertical size={32} />
-          </div>
-        </sections>
-      </nav>
+            <h1 className="xl:text-3xl sm:block sm:text-2xl hidden text-black dark:text-white font-bold">
+              Kanban
+            </h1>
+          </section>
 
-      <main className="flex flex-row">
-        {/* side bar */}
-        {showSidebar ? (
-          <section className="basis-[15%] bg-white dark:bg-dark_grey relative h-screen pt-24">
-            <h2 className="text-medium_grey p-5 text-xl uppercase">
-              ALl boards (8)
+          {/* navigation */}
+          <sections
+            className="flex flex-row justify-between items-center 
+          sm:border-l sm:border-l-lines_light sm:dark:border-l-lines_dark py-4 sm:border-b
+         sm:border-b-lines_light sm:dark:border-b-lines_dark
+         sm:basis-[70%] xl:basis-4/5
+         "
+          >
+            <h2 className="sm:text-2xl hidden sm:block text-black dark:text-white font-bold px-5">
+              Platform Launch
             </h2>
 
-            {/* Board List */}
-            <ul className="w-[85%] space-y-3">
-              <li className="text-lg  px-5 py-2 bg-main_purple text-white flex items-center gap-2 rounded-r-full">
-                <Kanban size={20} />
-                <span>Board 1</span>
-              </li>
-              <li className="text-lg text-medium_grey px-5  flex items-center gap-2 rounded-r-full">
-                <Kanban size={20} />
-                <span>Board 1</span>
-              </li>
-              <li className="text-lg text-medium_grey px-5  flex items-center gap-2 rounded-r-full">
-                <Kanban size={20} />
-                <span>Board 1</span>
-              </li>
-            </ul>
-
-            <div className="absolute bottom-12 px-5">
-              {/* Theme Toggle */}
-              <div
-                className="flex gap-3 items-center justify-center bg-light_grey dark:bg-very_dark_grey
-             text-medium_grey py-1 px-8 rounded-md"
+            <div className="flex xl:gap-5 items-center">
+              <button
+                type="button"
+                className="text-white bg-purple_hover dark:bg-main_purple flex sm:gap-1 
+                sm:text-lg text-sm
+              sm:py-2 py-1 sm:px-7 px-3 rounded-3xl items-center opacity-50"
               >
-                <Sun size={23} />
-                {/* Toggle Button */}
-                {toggleTheme ? (
-                  <div className="text-main_purple">
-                    <ToggleRight size={35} onClick={handleToggleTheme} />
-                  </div>
-                ) : (
-                  <div className="text-main_purple">
-                    <ToggleLeft size={35} onClick={handleToggleTheme} />
-                  </div>
-                )}
-                <MoonStars size={23} />
-              </div>
+                <Plus size={20} />
+                <span className="xl:block hidden">Add New Task</span>
+              </button>
 
-              <div
-                className="flex gap-2 text-medium_grey items-center justify-center mt-5 cursor-pointer"
-                onClick={handleShowSidebar}
-              >
-                <EyeSlash size={25} />
-                <p className="text-lg">Hide side bar</p>
+              <div>
+                <DotsThreeVertical size={32} />
               </div>
             </div>
-          </section>
-        ) : null}
+          </sections>
+        </nav>
 
-        <section
-          className={`${
-            showSidebar ? "basis-[85%]" : "w-full"
-          } border-l border-l-lines_light dark:border-l-lines_dark relative`}
+        <main
+          className={`flex flex-row ${
+            showDropDown ? "blur-sm sm:blur-none" : null
+          }`}
         >
-          {children}
-          {showSidebar ? null : (
-            <div
-              onClick={handleShowSidebar}
-              className="absolute left-0 bottom-12 py-2 px-4 rounded-r-full bg-main_purple"
-            >
-              <Eye size={32} />
-            </div>
-          )}
-        </section>
-      </main>
-    </body>
+          {/* side bar */}
+
+          <Sidebar
+            toggleTheme={toggleTheme}
+            handleToggleTheme={handleToggleTheme}
+            handleShowSidebar={handleShowSidebar}
+            showSidebar={showSidebar}
+          />
+
+          <section
+            className={`${
+              showSidebar ? "sm:basis-[70%] xl:basis-4/5 w-full" : "w-full"
+            } sm:border-l sm:border-l-lines_light sm:dark:border-l-very_dark_grey relative`}
+          >
+            {children}
+            {showSidebar ? null : (
+              <div
+                onClick={handleShowSidebar}
+                className="xl:block hidden absolute left-0 bottom-12 py-2 px-4 rounded-r-full bg-main_purple"
+              >
+                <Eye size={32} />
+              </div>
+            )}
+          </section>
+        </main>
+      </body>
+    </Provider>
   );
 };
 
